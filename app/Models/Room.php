@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property int $apartment_id
- * @property string $type
+ * @property string $type_code
  * @property-read \App\Models\Apartment|null $apartment
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PieceOfFurniture[] $furniture
  * @property-read int|null $furniture_count
@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Room query()
  * @method static \Illuminate\Database\Eloquent\Builder|Room whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Room whereApartmentId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Room whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Room whereTypeCode($value)
  * @mixin \Eloquent
  */
 class Room extends Model
