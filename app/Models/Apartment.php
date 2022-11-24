@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $number
  * @property int $number_of_rooms
  * @property string $address
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Room[] $rooms
+ * @property-read int|null $rooms_count
  * @method static \Illuminate\Database\Eloquent\Builder|Apartment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Apartment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Apartment query()
@@ -26,4 +28,9 @@ class Apartment extends Model
     use HasFactory;
 
     public $timestamps = false;
+
+    public function rooms(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Room::class, 'apartment_id', 'id');
+    }
 }
