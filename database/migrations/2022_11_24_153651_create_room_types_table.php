@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('code', 64);
             $table->string('name', 128);
 
-            $table->index('code');
+            $table->unique('code');
         });
     }
 
