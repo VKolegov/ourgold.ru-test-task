@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $type_code
  * @property int $apartment_id
  * @property int $room_id
+ * @property-read \App\Models\Apartment $apartment
+ * @property-read \App\Models\Room $room
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture query()
@@ -28,4 +30,14 @@ use Illuminate\Database\Eloquent\Model;
 class PieceOfFurniture extends Model
 {
     use HasFactory;
+
+    public function room(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Room::class, 'room_id', 'id');
+    }
+
+    public function apartment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Apartment::class, 'apartment_id', 'id');
+    }
 }

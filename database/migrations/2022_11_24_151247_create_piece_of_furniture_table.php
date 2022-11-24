@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('piece_of_furniture', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('type', 64);
+            $table->string('type_code', 64);
             $table->unsignedBigInteger('apartment_id');
             $table->unsignedBigInteger('room_id');
 
@@ -31,6 +31,13 @@ return new class extends Migration
                 ->on('rooms')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
+
+            $table->foreign('type_code')
+                ->references('code')
+                ->on('piece_of_furniture_types')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
         });
     }
 
