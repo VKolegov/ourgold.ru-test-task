@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $address
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Room[] $rooms
  * @property-read int|null $rooms_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PieceOfFurniture[] $furniture
+ * @property-read int|null $furniture_count
  * @method static \Illuminate\Database\Eloquent\Builder|Apartment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Apartment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Apartment query()
@@ -32,5 +34,10 @@ class Apartment extends Model
     public function rooms(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Room::class, 'apartment_id', 'id');
+    }
+
+    public function furniture(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PieceOfFurniture::class, 'apartment_id', 'id');
     }
 }
