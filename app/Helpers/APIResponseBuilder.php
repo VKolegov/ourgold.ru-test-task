@@ -5,6 +5,7 @@ namespace App\Helpers;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
 
@@ -66,6 +67,13 @@ class APIResponseBuilder
         }
         $this->page = $page;
         return $this;
+    }
+
+    public function setPageParamsFromRequest(Request $r) {
+        $params = $r->all(['page', 'perPage']);
+
+        $this->setPage($params['page'] ?? $this->page);
+        $this->setPerPage($params['perPage'] ?? $this->perPage);
     }
 
     public function setQuery(Builder $query): static
