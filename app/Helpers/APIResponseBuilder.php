@@ -114,6 +114,10 @@ class APIResponseBuilder
     {
         $model = ($this->modelClass)::query()->where($idColumn, $id)->first();
 
+        if (!$model) {
+            return $this->errorResponse("not found", 404);
+        }
+
         $serialized = $this->entityMappingFunction ? ($this->entityMappingFunction)($model) : $model->toArray();
 
         return new JsonResponse(
@@ -147,5 +151,15 @@ class APIResponseBuilder
             'count' => count($entities),
             'entities' => $entities,
         ];
+    }
+
+    public function errorResponse(string $message, int $code = 500) : JsonResponse
+    {
+        return new JsonResponse(
+            [
+                'message' => $message,
+            ],
+            $code
+        );
     }
 }
