@@ -127,6 +127,9 @@ Homestead.json
 /.vagrant
 .phpunit.result.cache
 
+.phpstorm.meta.php
+_ide_helper.php
+
 ### macOS ###
 # General
 .DS_Store
