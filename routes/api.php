@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\v1\ApartmentsAPIController;
+use App\Http\Controllers\api\v1\RoomsAPIController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,3 +26,11 @@ Route::controller(ApartmentsAPIController::class)
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
     });
+
+Route::controller(RoomsAPIController::class)
+    ->prefix('rooms')
+    ->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
