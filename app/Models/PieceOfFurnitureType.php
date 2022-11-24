@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $code
  * @property string $name
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PieceOfFurniture[] $furniture
+ * @property-read int|null $furniture_count
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurnitureType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurnitureType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurnitureType query()
@@ -22,4 +24,9 @@ use Illuminate\Database\Eloquent\Model;
 class PieceOfFurnitureType extends Model
 {
     use HasFactory;
+
+    public function furniture(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PieceOfFurniture::class, 'type_code', 'code');
+    }
 }

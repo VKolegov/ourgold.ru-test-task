@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $type_code
  * @property int $apartment_id
  * @property int $room_id
+ * @property-read \App\Models\PieceOfFurnitureType $type
  * @property-read \App\Models\Apartment $apartment
  * @property-read \App\Models\Room $room
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture newModelQuery()
@@ -39,5 +40,10 @@ class PieceOfFurniture extends Model
     public function apartment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Apartment::class, 'apartment_id', 'id');
+    }
+
+    public function type(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(PieceOfFurnitureType::class, 'type_code', 'code');
     }
 }
