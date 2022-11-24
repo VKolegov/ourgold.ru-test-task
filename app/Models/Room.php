@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * App\Models\Room
  *
  * @property int $id
+ * @property string $name
  * @property int $apartment_id
  * @property string $type_code
  * @property-read \App\Models\Apartment|null $apartment
