@@ -32,10 +32,6 @@ class RoomTypesSeeder extends Seeder
                 'name' => 'Ванная',
             ],
             [
-                'code' => 'bathroom',
-                'name' => 'Ванная',
-            ],
-            [
                 'code' => 'hallway',
                 'name' => 'Прихожая',
             ],
