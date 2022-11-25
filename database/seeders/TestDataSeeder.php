@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Apartment;
+use App\Models\PieceOfFurnitureHistoryEntry;
 use App\Models\PieceOfFurnitureType;
 use App\Models\Room;
 use App\Models\RoomType;
@@ -42,18 +43,24 @@ class TestDataSeeder extends Seeder
         $this->furnitureTypes = PieceOfFurnitureType::all();
 
 
+        $apartments = collect();
+
         for ($i = 0; $i < self::NUMBER_OF_APARTMENTS; $i++) {
             $apartment = Apartment::create(
                 [
                     'number' => $this->faker->numberBetween(1, 500),
-                    'number_of_rooms' => $this->faker->numberBetween(1, 5),
+                    'number_of_rooms' => $this->faker->numberBetween(2, 5),
                     'address' => $this->faker->address,
                 ]
             );
 
+            $apartments->push($apartment);
+
             $this->createRoomsForApartment($apartment);
             $this->createFurnitureForApartment($apartment);
         }
+
+       $this->generateMovements($apartments, 30, 5);
     }
 
     private function createRoomsForApartment(Apartment $apartment): void
@@ -121,6 +128,42 @@ class TestDataSeeder extends Seeder
             }
 
             $room->furniture()->createMany($furnitureData);
+        }
+
+        PieceOfFurnitureHistoryEntry::whereNotNull('date')
+            ->update([
+                'date' => now()->subMonth()->startOfDay(),
+            ]);
+    }
+
+    private function generateMovements(Collection $apartments, int $movements, int $minutesStep = 15) {
+
+        $movementDate = now()->subMonth()->startOfDay()->toImmutable();
+
+        $movementsCount = 0;
+
+        while ($movementsCount < $movements) {
+
+            /** @var Apartment $apartment */
+            $apartment = $apartments->random();
+
+            /** @var Room[]|Collection $rooms */
+            $rooms = $apartment->rooms->random(2);
+
+            $room1 = $rooms[0];
+            $room2 = $rooms[1];
+
+            /** @var \App\Models\PieceOfFurniture $pieceOfFurniture */
+            $pieceOfFurniture = $room1->furniture->random();
+
+            $pieceOfFurniture->room_id = $room2->id;
+            $pieceOfFurniture->save();
+
+            $h = $pieceOfFurniture->history()->first();
+            // otherwise saved only last value
+            $h->date = $movementDate->addMinutes($minutesStep * $movementsCount);
+            $h->save();
+            $movementsCount++;
         }
     }
 }
