@@ -18,9 +18,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \App\Models\PieceOfFurnitureType $type
  * @property-read \App\Models\Apartment $apartment
  * @property-read \App\Models\Room $room
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PieceOfFurnitureHistoryEntry[] $history
+ * @property-read int|null $history_count
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereApartmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereId($value)
@@ -46,5 +49,11 @@ class PieceOfFurniture extends Model
     public function type(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(PieceOfFurnitureType::class, 'type_code', 'code');
+    }
+
+    public function history(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PieceOfFurnitureHistoryEntry::class, 'piece_of_furniture_id', 'id')
+            ->orderBy('date', 'desc');
     }
 }
