@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\api\v1;
 
-use App\Helpers\API\RangeFieldFilter;
+use App\Helpers\API\Filtering\RangeFieldFilter;
 use App\Models\Apartment;
 
 class ApartmentsAPIController extends AbstractAPIController

@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\api\v1;
 
-use App\Helpers\APIResponseBuilder;
+use App\Helpers\API\APIResponseBuilder;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 abstract class AbstractAPIController extends Controller
 {
     /**
-     * @var \App\Helpers\APIResponseBuilder
+     * @var \App\Helpers\API\APIResponseBuilder
      */
     protected APIResponseBuilder $responseBuilder;
 
@@ -24,11 +24,11 @@ abstract class AbstractAPIController extends Controller
 
     public function index(Request $r): \Illuminate\Http\JsonResponse
     {
-        $this->responseBuilder->setPageParamsFromRequest($r);
-
         $this->responseBuilder->setFilterParams(
             $this->filterParams()
         );
+
+        $this->responseBuilder->setPageParamsFromRequest($r);
         $this->responseBuilder->applyFilterToQuery($r);
 
         return $this->responseBuilder->entitiesResponse();
@@ -39,6 +39,9 @@ abstract class AbstractAPIController extends Controller
         return $this->responseBuilder->singleEntityResponse($id);
     }
 
+    /**
+     * @return \App\Helpers\API\Filtering\FieldFilter[]
+     */
     protected function filterParams(): array
     {
         return [];

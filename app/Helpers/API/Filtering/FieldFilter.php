@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers\API;
+namespace App\Helpers\API\Filtering;
 
 use Illuminate\Contracts\Database\Query\Builder;
 

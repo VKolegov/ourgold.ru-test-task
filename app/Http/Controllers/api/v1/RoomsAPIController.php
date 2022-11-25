@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\api\v1;
 
-use App\Helpers\API\MultipleMatchFieldFilter;
+use App\Helpers\API\Filtering\MultipleMatchFieldFilter;
 use App\Models\Room;
 
 class RoomsAPIController extends AbstractAPIController

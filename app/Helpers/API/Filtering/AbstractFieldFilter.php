@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers\API;
+namespace App\Helpers\API\Filtering;
 
 abstract class AbstractFieldFilter implements FieldFilter
 {

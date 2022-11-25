@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Helpers\API;
 
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +20,7 @@ class APIResponseBuilder
     private int $perPage = 20;
 
     /**
-     * @var \App\Helpers\API\FieldFilter[]
+     * @var \App\Helpers\API\Filtering\FieldFilter[]
      */
     private array $filterParams = [];
 
@@ -108,7 +108,7 @@ class APIResponseBuilder
     }
 
     /**
-     * @param \App\Helpers\API\FieldFilter[] $filterParams
+     * @param \App\Helpers\API\Filtering\FieldFilter[] $filterParams
      * @return static
      */
     public function setFilterParams(array $filterParams): static
