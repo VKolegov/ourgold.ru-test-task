@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Helpers\API;
 
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
 
 class APIResponseBuilder
@@ -15,10 +14,16 @@ class APIResponseBuilder
     /**
      * @var \Illuminate\Contracts\Database\Query\Builder
      */
-    private Builder $query;
+    private Builder $queryBuilder;
 
     private int $page = 1;
     private int $perPage = 20;
+
+    /**
+     * @var \App\Helpers\API\Filtering\FieldFilter[]
+     */
+    private array $filterParams = [];
+
     /**
      * @var callable|null
      */
@@ -34,13 +39,13 @@ class APIResponseBuilder
             throw new \InvalidArgumentException("$modelClass is not Model");
         }
 
-        $this->query = $modelClass::query();
+        $this->queryBuilder = $modelClass::query();
         $this->modelClass = $modelClass;
     }
 
     /**
      * @param int $perPage
-     * @return APIResponseBuilder
+     * @return static
      */
     public function setPerPage(int $perPage): static
     {
@@ -58,7 +63,7 @@ class APIResponseBuilder
 
     /**
      * @param int $page
-     * @return APIResponseBuilder
+     * @return static
      */
     public function setPage(int $page): static
     {
@@ -76,15 +81,15 @@ class APIResponseBuilder
         $this->setPerPage($params['perPage'] ?? $this->perPage);
     }
 
-    public function setQuery(Builder $query): static
+    public function setQueryBuilder(Builder $queryBuilder): static
     {
-        $this->query = $query;
+        $this->queryBuilder = $queryBuilder;
         return $this;
     }
 
     /**
      * @param callable|null $entityMappingFunction
-     * @return APIResponseBuilder
+     * @return static
      */
     public function setEntityMappingFunction(?callable $entityMappingFunction): static
     {
@@ -94,7 +99,7 @@ class APIResponseBuilder
 
     /**
      * @param callable|null $entitiesMappingFunction
-     * @return APIResponseBuilder
+     * @return static
      */
     public function setEntitiesMappingFunction(?callable $entitiesMappingFunction): static
     {
@@ -103,8 +108,40 @@ class APIResponseBuilder
     }
 
     /**
+     * @param \App\Helpers\API\Filtering\FieldFilter[] $filterParams
+     * @return static
+     */
+    public function setFilterParams(array $filterParams): static
+    {
+        $this->filterParams = $filterParams;
+
+        return $this;
+    }
+
+    /**
      * END SETTERS
      */
+
+    public function applyFilterToQuery(Request $r) {
+        foreach ($this->filterParams as $filterParam) {
+            $params = $r->validate($filterParam->validationRules());
+
+            $filterParam->applyToQuery($params, $this->queryBuilder);
+        }
+    }
+
+
+    /**
+     * GETTERS
+     */
+
+    /**
+     * @return \Illuminate\Contracts\Database\Query\Builder
+     */
+    public function getQueryBuilder(): Builder
+    {
+        return $this->queryBuilder;
+    }
 
     /**
      * RESPONSES
@@ -127,7 +164,8 @@ class APIResponseBuilder
 
     public function entitiesResponse(): JsonResponse
     {
-        $query = $this->query->clone();
+        $query = $this->queryBuilder->clone();
+        $totalCount = $query->count();
 
         if ($this->perPage > 0) {
             $offset = $this->perPage * ($this->page - 1);
@@ -137,18 +175,19 @@ class APIResponseBuilder
         $entities = $query->get()->toArray();
 
         return new JsonResponse(
-            $this->entitiesResponseArray($entities)
+            $this->entitiesResponseArray($entities, $totalCount)
         );
     }
 
-    #[ArrayShape(['count' => "int", 'entities' => "array"])]
-    public function entitiesResponseArray(array $entities): array
+    #[ArrayShape(['total_count' => "int", 'entities' => "array"])]
+    public function entitiesResponseArray(array $entities, int $totalCount): array
     {
         if ($this->entitiesMappingFunction) {
             $entities = array_map($this->entitiesMappingFunction, $entities);
         }
+
         return [
-            'count' => count($entities),
+            'total_count' => $totalCount,
             'entities' => $entities,
         ];
     }
