@@ -123,16 +123,10 @@ class APIResponseBuilder
      */
 
     public function applyFilterToQuery(Request $r) {
-        $this->validateRequest($r);
-
         foreach ($this->filterParams as $filterParam) {
-            $filterParam->applyToQuery($r->all(), $this->queryBuilder);
-        }
-    }
+            $params = $r->validate($filterParam->validationRules());
 
-    public function validateRequest(Request $r) {
-        foreach ($this->filterParams as $filterParam) {
-            $r->validate($filterParam->validationRules());
+            $filterParam->applyToQuery($params, $this->queryBuilder);
         }
     }
 
