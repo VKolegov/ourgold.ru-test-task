@@ -25,6 +25,9 @@ class PieceOfFurnitureHistoryEntry extends Model
 {
     use HasFactory;
     public $timestamps = false;
+
+    protected $fillable = ['date', 'apartment_id', 'room_id'];
+
     protected $dates = [
         'date'
     ];
