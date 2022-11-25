@@ -140,6 +140,7 @@ class APIResponseBuilder
     public function entitiesResponse(): JsonResponse
     {
         $query = $this->queryBuilder->clone();
+        $totalCount = $query->count();
 
         if ($this->perPage > 0) {
             $offset = $this->perPage * ($this->page - 1);
@@ -149,18 +150,19 @@ class APIResponseBuilder
         $entities = $query->get()->toArray();
 
         return new JsonResponse(
-            $this->entitiesResponseArray($entities)
+            $this->entitiesResponseArray($entities, $totalCount)
         );
     }
 
-    #[ArrayShape(['count' => "int", 'entities' => "array"])]
-    public function entitiesResponseArray(array $entities): array
+    #[ArrayShape(['total_count' => "int", 'entities' => "array"])]
+    public function entitiesResponseArray(array $entities, int $totalCount): array
     {
         if ($this->entitiesMappingFunction) {
             $entities = array_map($this->entitiesMappingFunction, $entities);
         }
+
         return [
-            'count' => count($entities),
+            'total_count' => $totalCount,
             'entities' => $entities,
         ];
     }
