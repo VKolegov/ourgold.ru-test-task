@@ -15,7 +15,7 @@ class APIResponseBuilder
     /**
      * @var \Illuminate\Contracts\Database\Query\Builder
      */
-    private Builder $query;
+    private Builder $queryBuilder;
 
     private int $page = 1;
     private int $perPage = 20;
@@ -34,7 +34,7 @@ class APIResponseBuilder
             throw new \InvalidArgumentException("$modelClass is not Model");
         }
 
-        $this->query = $modelClass::query();
+        $this->queryBuilder = $modelClass::query();
         $this->modelClass = $modelClass;
     }
 
@@ -76,9 +76,9 @@ class APIResponseBuilder
         $this->setPerPage($params['perPage'] ?? $this->perPage);
     }
 
-    public function setQuery(Builder $query): static
+    public function setQueryBuilder(Builder $queryBuilder): static
     {
-        $this->query = $query;
+        $this->queryBuilder = $queryBuilder;
         return $this;
     }
 
@@ -107,6 +107,18 @@ class APIResponseBuilder
      */
 
     /**
+     * GETTERS
+     */
+
+    /**
+     * @return \Illuminate\Contracts\Database\Query\Builder
+     */
+    public function getQueryBuilder(): Builder
+    {
+        return $this->queryBuilder;
+    }
+
+    /**
      * RESPONSES
      */
 
@@ -127,7 +139,7 @@ class APIResponseBuilder
 
     public function entitiesResponse(): JsonResponse
     {
-        $query = $this->query->clone();
+        $query = $this->queryBuilder->clone();
 
         if ($this->perPage > 0) {
             $offset = $this->perPage * ($this->page - 1);
