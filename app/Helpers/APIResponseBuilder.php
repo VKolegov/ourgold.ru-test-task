@@ -6,7 +6,6 @@ use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
 
 class APIResponseBuilder
@@ -19,6 +18,12 @@ class APIResponseBuilder
 
     private int $page = 1;
     private int $perPage = 20;
+
+    /**
+     * @var \App\Helpers\API\FieldFilter[]
+     */
+    private array $filterParams = [];
+
     /**
      * @var callable|null
      */
@@ -40,7 +45,7 @@ class APIResponseBuilder
 
     /**
      * @param int $perPage
-     * @return APIResponseBuilder
+     * @return static
      */
     public function setPerPage(int $perPage): static
     {
@@ -58,7 +63,7 @@ class APIResponseBuilder
 
     /**
      * @param int $page
-     * @return APIResponseBuilder
+     * @return static
      */
     public function setPage(int $page): static
     {
@@ -84,7 +89,7 @@ class APIResponseBuilder
 
     /**
      * @param callable|null $entityMappingFunction
-     * @return APIResponseBuilder
+     * @return static
      */
     public function setEntityMappingFunction(?callable $entityMappingFunction): static
     {
@@ -94,7 +99,7 @@ class APIResponseBuilder
 
     /**
      * @param callable|null $entitiesMappingFunction
-     * @return APIResponseBuilder
+     * @return static
      */
     public function setEntitiesMappingFunction(?callable $entitiesMappingFunction): static
     {
@@ -103,8 +108,34 @@ class APIResponseBuilder
     }
 
     /**
+     * @param \App\Helpers\API\FieldFilter[] $filterParams
+     * @return static
+     */
+    public function setFilterParams(array $filterParams): static
+    {
+        $this->filterParams = $filterParams;
+
+        return $this;
+    }
+
+    /**
      * END SETTERS
      */
+
+    public function applyFilterToQuery(Request $r) {
+        $this->validateRequest($r);
+
+        foreach ($this->filterParams as $filterParam) {
+            $filterParam->applyToQuery($r->all(), $this->queryBuilder);
+        }
+    }
+
+    public function validateRequest(Request $r) {
+        foreach ($this->filterParams as $filterParam) {
+            $r->validate($filterParam->validationRules());
+        }
+    }
+
 
     /**
      * GETTERS
