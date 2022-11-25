@@ -11,9 +11,9 @@ abstract class AbstractAPIController extends Controller
     /**
      * @var \App\Helpers\APIResponseBuilder
      */
-    private APIResponseBuilder $responseBuilder;
+    protected APIResponseBuilder $responseBuilder;
 
-    abstract protected function getModelClass() : string;
+    abstract protected function getModelClass(): string;
 
     public function __construct()
     {
@@ -25,11 +25,22 @@ abstract class AbstractAPIController extends Controller
     public function index(Request $r): \Illuminate\Http\JsonResponse
     {
         $this->responseBuilder->setPageParamsFromRequest($r);
+
+        $this->responseBuilder->setFilterParams(
+            $this->filterParams()
+        );
+        $this->responseBuilder->applyFilterToQuery($r);
+
         return $this->responseBuilder->entitiesResponse();
     }
 
     public function show(int $id, Request $r): \Illuminate\Http\JsonResponse
     {
         return $this->responseBuilder->singleEntityResponse($id);
+    }
+
+    protected function filterParams(): array
+    {
+        return [];
     }
 }
