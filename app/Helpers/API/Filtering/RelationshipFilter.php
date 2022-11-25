@@ -11,6 +11,7 @@ class RelationshipFilter extends AbstractFieldFilter
      * @var \App\Helpers\API\Filtering\FieldFilter[] $filters
      */
     private array $filters = [];
+    private bool $loadRelationship = true;
 
     public function setFilters(array $filters): static
     {
@@ -18,18 +19,40 @@ class RelationshipFilter extends AbstractFieldFilter
         return $this;
     }
 
+    /**
+     * @param bool $loadRelationship
+     * @return static
+     */
+    public function setLoadRelationship(bool $loadRelationship): static
+    {
+        $this->loadRelationship = $loadRelationship;
+        return $this;
+    }
+
     public function applyToQuery(array $requestFields, Builder $query)
     {
-        if (!empty($this->filters)) {
-            $filters = $this->filters;
-            $query->whereHas($this->field, function ($q) use ($requestFields, $filters) {
-                foreach ($filters as $filter) {
-                    $filter->applyToQuery($requestFields, $q);
-                }
-            });
+        if (empty($this->filters)) {
+            return;
         }
 
-        $query->with([$this->field]); // TODO: optional
+        $filters = $this->filters;
+        $query->whereHas($this->field, function ($q) use ($requestFields, $filters) {
+            foreach ($filters as $filter) {
+                $filter->applyToQuery($requestFields, $q);
+            }
+        });
+
+        if ($this->loadRelationship) {
+            $query->with(
+                [
+                    $this->field => function ($q) use ($requestFields, $filters) {
+                        foreach ($filters as $filter) {
+                            $filter->applyToQuery($requestFields, $q);
+                        }
+                    },
+                ]
+            );
+        }
     }
 
     public function validationRules(): array
