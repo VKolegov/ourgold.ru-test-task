@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $apartment_id
  * @property string $type_code
  * @property-read \App\Models\Apartment|null $apartment
+ * @property-read \App\Models\RoomType|null $type
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PieceOfFurniture[] $furniture
  * @property-read int|null $furniture_count
  * @method static \Illuminate\Database\Eloquent\Builder|Room newModelQuery()
@@ -39,5 +40,10 @@ class Room extends Model
     public function furniture(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(PieceOfFurniture::class, 'room_id', 'id');
+    }
+
+    public function type(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(RoomType::class, 'type_code', 'code');
     }
 }
