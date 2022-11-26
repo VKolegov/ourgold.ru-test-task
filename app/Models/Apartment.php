@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Apartment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Apartment whereNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Apartment whereNumberOfRooms($value)
+ * @method static \Database\Factories\ApartmentFactory factory(...$parameters)
  * @mixin \Eloquent
  */
 class Apartment extends Model
