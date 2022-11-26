@@ -4,7 +4,7 @@ namespace App\Helpers\API\Filtering;
 
 use Illuminate\Contracts\Database\Query\Builder;
 
-class RelationshipFilter extends AbstractFieldFilter
+class RelationshipCompositeFilter extends AbstractFieldFilter
 {
 
     /**
@@ -12,6 +12,7 @@ class RelationshipFilter extends AbstractFieldFilter
      */
     private array $filters = [];
     private bool $loadRelationship = true;
+    private bool $filterRelationship = false;
 
     public function setFilters(array $filters): static
     {
@@ -29,6 +30,16 @@ class RelationshipFilter extends AbstractFieldFilter
         return $this;
     }
 
+    /**
+     * @param bool $filterRelationship
+     * @return static
+     */
+    public function setFilterRelationship(bool $filterRelationship): static
+    {
+        $this->filterRelationship = $filterRelationship;
+        return $this;
+    }
+
     public function applyToQuery(array $requestFields, Builder $query)
     {
         if (empty($this->filters)) {
@@ -36,22 +47,23 @@ class RelationshipFilter extends AbstractFieldFilter
         }
 
         $filters = $this->filters;
-        $query->whereHas($this->field, function ($q) use ($requestFields, $filters) {
+        $query->whereHas($this->column, function ($q) use ($requestFields, $filters) {
             foreach ($filters as $filter) {
                 $filter->applyToQuery($requestFields, $q);
             }
         });
 
         if ($this->loadRelationship) {
-            $query->with(
-                [
-                    $this->field => function ($q) use ($requestFields, $filters) {
-                        foreach ($filters as $filter) {
-                            $filter->applyToQuery($requestFields, $q);
-                        }
+
+            if (!$this->filterRelationship) {
+                $query->with([$this->column]);
+            } else {
+                $query->with([
+                    $this->column => function ($q) use ($requestFields, $filters) {
+                        foreach ($filters as $filter) { $filter->applyToQuery($requestFields, $q); }
                     },
-                ]
-            );
+                ]);
+            }
         }
     }
 

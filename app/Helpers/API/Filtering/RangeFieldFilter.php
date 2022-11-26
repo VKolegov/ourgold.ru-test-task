@@ -24,11 +24,11 @@ class RangeFieldFilter extends AbstractFieldFilter
         }
 
         if (isset($requestFields[$this->minField])) {
-            $query->where($this->field, '>=', $requestFields[$this->minField]);
+            $query->where($this->column, '>=', $requestFields[$this->minField]);
         }
 
         if (isset($requestFields[$this->maxField])) {
-            $query->where($this->field, '<=', $requestFields[$this->maxField]);
+            $query->where($this->column, '<=', $requestFields[$this->maxField]);
         }
     }
 

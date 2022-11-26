@@ -28,7 +28,7 @@ class MultipleMatchFieldFilter extends AbstractFieldFilter
             return;
         }
 
-        $query->whereIn($this->field, $requestFields[$this->field]);
+        $query->whereIn($this->column, $requestFields[$this->field]);
     }
 
     public function validationRules(): array

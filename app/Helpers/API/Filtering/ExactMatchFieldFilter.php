@@ -11,7 +11,7 @@ class ExactMatchFieldFilter extends AbstractFieldFilter
         if (!isset($requestFields[$this->field])) {
             return;
         }
-        $query->where($this->field, '=', $requestFields[$this->field]);
+        $query->where($this->column, '=', $requestFields[$this->field]);
     }
 
     public function validationRules(): array

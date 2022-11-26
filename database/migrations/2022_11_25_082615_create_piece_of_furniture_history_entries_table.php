@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
 
             $table->unsignedBigInteger('piece_of_furniture_id');
-            $table->timestamp('date');
+            $table->timestamp('placed_at');
+            $table->timestamp('removed_at')->nullable();
             $table->unsignedBigInteger('apartment_id')->nullable();
             $table->unsignedBigInteger('room_id')->nullable();
 
