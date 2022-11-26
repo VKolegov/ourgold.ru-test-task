@@ -26,10 +26,10 @@ abstract class AbstractAPIController extends Controller
     {
         $this->responseBuilder->setFilterParams(
             $this->filterParams()
-        );
-
-        $this->responseBuilder->setPageParamsFromRequest($r);
-        $this->responseBuilder->applyFilterToQuery($r);
+        )
+            ->setPageParamsFromRequest($r)
+            ->setRelationshipsToEagerLoad($this->relationshipsToEagerLoad())
+            ->applyFilterToQuery($r);
 
         return $this->responseBuilder->entitiesResponse();
     }
@@ -43,6 +43,11 @@ abstract class AbstractAPIController extends Controller
      * @return \App\Helpers\API\Filtering\FieldFilter[]
      */
     protected function filterParams(): array
+    {
+        return [];
+    }
+
+    protected function relationshipsToEagerLoad(): array
     {
         return [];
     }
