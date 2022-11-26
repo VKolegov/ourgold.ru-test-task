@@ -8,28 +8,24 @@ class HistorySnapshotFilter implements FieldFilter
 {
 
     private string $fieldName;
-    private string $minDateField;
-    private string $maxDateField;
+    private string $minDateColumn;
+    private string $maxDateColumn;
 
-    public function __construct(string $fieldName, string $minDateField, string $maxDateField)
+    public function __construct(string $fieldName, string $minDateColumn, string $maxDateColumn)
     {
         $this->fieldName = $fieldName;
-        $this->minDateField = $minDateField;
-        $this->maxDateField = $maxDateField;
+        $this->minDateColumn = $minDateColumn;
+        $this->maxDateColumn = $maxDateColumn;
     }
 
     public function applyToQuery(array $requestFields, Builder $query)
     {
-        if (!isset($requestFields[$this->fieldName])) {
-            return;
-        }
+        $val = $requestFields[$this->fieldName] ?? now();
 
-        $val = $requestFields[$this->fieldName];
-
-        $query->where($this->minDateField, '<=', $val);
+        $query->where($this->minDateColumn, '<=', $val);
         $query->where(function (Builder $q) use ($val) {
-            $q->whereNull($this->maxDateField);
-            $q->orWhere($this->maxDateField, '>=', $val);
+            $q->whereNull($this->maxDateColumn);
+            $q->orWhere($this->maxDateColumn, '>=', $val);
         });
     }
 
