@@ -37,6 +37,7 @@ class TestDataSeeder extends Seeder
         $this->faker = $this->makeFaker('ru_RU');
         $this->call(RoomTypesSeeder::class);
         $this->call(PieceOfFurnitureTypesSeeder::class);
+        $this->call(MaterialsSeeder::class);
 
         $this->roomTypes = RoomType::all();
 
