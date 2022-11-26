@@ -3,12 +3,14 @@ import API from "./services/API";
 import {ref, watch} from "vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import {formatDate} from "./utils";
 
 const props = defineProps({
     roomId: [Number, String],
     apartmentId: [Number, String],
 });
 
+const dateFormat = "dd/MM/yyyy HH:mm";
 
 
 const furnitureAPI = new API("/api/v1/pieces-of-furniture");
@@ -46,7 +48,7 @@ fetchFurniture(filterParams.value);
 <h1>Квартира {{ apartmentId }} | Комната {{ roomId }}</h1>
 <date-picker
     v-model="filterParams.date"
-    format="dd/MM/yyyy HH:mm"
+    :format="dateFormat"
     :clearable="false"
 
     :enable-time-picker="true"
@@ -58,7 +60,7 @@ fetchFurniture(filterParams.value);
     locale="ru-RU"
 
     input-class-name="form-control"
-    utc="preserve"
+    utc
 
     v-bind="$attrs"
 />
@@ -68,7 +70,7 @@ fetchFurniture(filterParams.value);
         <td>ID</td>
         <td>Название</td>
         <td>Тип</td>
-<!--        <td>Мебель</td>-->
+        <td>Перемещено</td>
     </tr>
     </thead>
     <tbody>
@@ -76,6 +78,7 @@ fetchFurniture(filterParams.value);
         <td>{{ furniture.id }}</td>
         <td>{{ furniture.name }}</td>
         <td>{{ furniture.type_code }}</td>
+        <td>{{ formatDate(furniture.history[0].placed_at, dateFormat) }}</td>
     </tr>
     </tbody>
 </table>
