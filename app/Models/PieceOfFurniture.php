@@ -30,11 +30,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereRoomId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereTypeCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereUpdatedAt($value)
+ * @method static \Database\Factories\PieceOfFurnitureFactory factory(...$parameters)
  * @mixin \Eloquent
  */
 class PieceOfFurniture extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['room_id', 'apartment_id'];
 
     public function room(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
