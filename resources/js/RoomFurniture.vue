@@ -73,8 +73,9 @@ fetchFurniture(filterParams.value);
 
 <template>
 <h1>
-    <router-link :to="{name: 'apartment-rooms', params:{apartmentId} }">Квартира {{ apartmentId }}</router-link>
-    | Комната {{ roomId }}
+    <router-link to="/">[К]</router-link>
+    > <router-link :to="{name: 'apartment-rooms', params:{apartmentId} }">Квартира {{ apartmentId }}</router-link>
+    > Комната {{ roomId }}
 </h1>
 <date-picker
     v-model="filterParams.date"

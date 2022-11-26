@@ -14,6 +14,9 @@ fetchApartments();
 </script>
 
 <template>
+<h1>
+    [Квартиры]
+</h1>
 <table class="table table-striped">
     <thead>
     <tr>

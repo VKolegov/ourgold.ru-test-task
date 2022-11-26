@@ -25,7 +25,10 @@ fetchRooms();
 </script>
 
 <template>
-<h1>Квартира {{ apartmentId }}</h1>
+<h1>
+    <router-link to="/">[К]</router-link>
+    > Квартира {{ apartmentId }}
+</h1>
 <table class="table table-striped">
     <thead>
     <tr>
