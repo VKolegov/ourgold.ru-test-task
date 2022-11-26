@@ -97,6 +97,7 @@ fetchFurniture(filterParams.value);
         <td>ID</td>
         <td>Название</td>
         <td>Тип</td>
+        <td>Материал</td>
         <td>Перемещено</td>
     </tr>
     </thead>
@@ -104,7 +105,8 @@ fetchFurniture(filterParams.value);
     <tr v-for="pieceOfFurniture in furniture">
         <td>{{ pieceOfFurniture.id }}</td>
         <td>{{ pieceOfFurniture.name }}</td>
-        <td>{{ pieceOfFurniture.type_code }}</td>
+        <td>{{ pieceOfFurniture.type.name }}</td>
+        <td>{{ pieceOfFurniture.material.name }}</td>
         <td>
             {{ formatDate(pieceOfFurniture.history[0].placed_at, dateFormat) }}
             <a href="#"
