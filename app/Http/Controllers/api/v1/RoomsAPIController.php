@@ -19,4 +19,9 @@ class RoomsAPIController extends AbstractAPIController
             new MultipleMatchFieldFilter('type_code', 'string'),
         ];
     }
+
+    protected function relationshipsToEagerLoad(): array
+    {
+        return ['type'];
+    }
 }
