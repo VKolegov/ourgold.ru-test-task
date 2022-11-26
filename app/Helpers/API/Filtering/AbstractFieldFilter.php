@@ -6,6 +6,7 @@ abstract class AbstractFieldFilter implements FieldFilter
 {
     protected string $field;
     protected string $fieldType;
+    protected string $column;
 
     protected const FIELD_TYPES = ['int', 'string', 'date'];
 
@@ -13,7 +14,7 @@ abstract class AbstractFieldFilter implements FieldFilter
      * @param string $field database column name
      * @param string $fieldType possible values: 'int', 'string', 'date'
      */
-    public function __construct(string $field, string $fieldType)
+    public function __construct(string $field, string $fieldType, ?string $column = null)
     {
         $this->field = $field;
 
@@ -21,5 +22,6 @@ abstract class AbstractFieldFilter implements FieldFilter
             throw new \InvalidArgumentException("invalid \$fieldType: $fieldType");
         }
         $this->fieldType = $fieldType;
+        $this->column = $column ?? $field;
     }
 }

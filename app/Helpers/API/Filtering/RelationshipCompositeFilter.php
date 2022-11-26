@@ -47,7 +47,7 @@ class RelationshipCompositeFilter extends AbstractFieldFilter
         }
 
         $filters = $this->filters;
-        $query->whereHas($this->field, function ($q) use ($requestFields, $filters) {
+        $query->whereHas($this->column, function ($q) use ($requestFields, $filters) {
             foreach ($filters as $filter) {
                 $filter->applyToQuery($requestFields, $q);
             }
@@ -55,11 +55,11 @@ class RelationshipCompositeFilter extends AbstractFieldFilter
 
         if ($this->loadRelationship) {
 
-            if ($this->filterRelationship) {
-                $query->with([$this->field]);
+            if (!$this->filterRelationship) {
+                $query->with([$this->column]);
             } else {
                 $query->with([
-                    $this->field => function ($q) use ($requestFields, $filters) {
+                    $this->column => function ($q) use ($requestFields, $filters) {
                         foreach ($filters as $filter) { $filter->applyToQuery($requestFields, $q); }
                     },
                 ]);
