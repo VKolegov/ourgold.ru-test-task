@@ -39,7 +39,7 @@ fetchRooms();
     <tr v-for="room in rooms">
         <td>{{ room.id }}</td>
         <td>{{ room.name }}</td>
-        <td>{{ room.type_code }}</td>
+        <td>{{ room.type.name }}</td>
         <td>
             <router-link
                 :to="{name: 'room-furniture', params: {apartmentId: apartmentId, roomId: room.id}}"
