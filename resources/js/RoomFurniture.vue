@@ -102,6 +102,7 @@ fetchFurniture(filterParams.value);
         <td>Название</td>
         <td>Тип</td>
         <td>Материал</td>
+        <td>Цвет</td>
         <td>Перемещено</td>
     </tr>
     </thead>
@@ -111,6 +112,7 @@ fetchFurniture(filterParams.value);
         <td>{{ pieceOfFurniture.name }}</td>
         <td>{{ pieceOfFurniture.type.name }}</td>
         <td>{{ pieceOfFurniture.material.name }}</td>
+        <td>{{ pieceOfFurniture.color.name }}</td>
         <td>
             {{ formatDate(pieceOfFurniture.history[0].placed_at, dateFormat) }}
             <a href="#"
