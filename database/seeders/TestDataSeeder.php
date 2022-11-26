@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Apartment;
+use App\Models\Color;
 use App\Models\Material;
 use App\Models\PieceOfFurnitureHistoryEntry;
 use App\Models\PieceOfFurnitureType;
@@ -28,6 +29,7 @@ class TestDataSeeder extends Seeder
      */
     private \Illuminate\Database\Eloquent\Collection $furnitureTypes;
     private \Illuminate\Database\Eloquent\Collection $materials;
+    private \Illuminate\Database\Eloquent\Collection $colors;
 
     /**
      * Run the database seeds.
@@ -40,10 +42,12 @@ class TestDataSeeder extends Seeder
         $this->call(RoomTypesSeeder::class);
         $this->call(PieceOfFurnitureTypesSeeder::class);
         $this->call(MaterialsSeeder::class);
+        $this->call(ColorsSeeder::class);
 
         $this->roomTypes = RoomType::all();
         $this->furnitureTypes = PieceOfFurnitureType::all();
         $this->materials = Material::all();
+        $this->colors = Color::all();
 
 
         $apartments = collect();
@@ -123,6 +127,7 @@ class TestDataSeeder extends Seeder
                 }
 
                 $material = $this->materials->random();
+                $color = $this->colors->random();
 
                 $furnitureData[] = [
                     'type_code' => $furnitureTypeCode,
@@ -130,6 +135,7 @@ class TestDataSeeder extends Seeder
                     'apartment_id' => $apartment->id,
                     'room_id' => $room->id,
                     'material_code' => $material->code,
+                    'color_code' => $color->code,
                 ];
             }
 
