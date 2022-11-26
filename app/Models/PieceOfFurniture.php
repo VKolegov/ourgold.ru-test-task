@@ -15,9 +15,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $type_code
  * @property int $apartment_id
  * @property int $room_id
+ * @property string $material_code
  * @property-read \App\Models\PieceOfFurnitureType $type
  * @property-read \App\Models\Apartment $apartment
  * @property-read \App\Models\Room $room
+ * @property-read \App\Models\Material $material
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PieceOfFurnitureHistoryEntry[] $history
  * @property-read int|null $history_count
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture newModelQuery()
@@ -37,6 +39,7 @@ class PieceOfFurniture extends Model
 {
     use HasFactory;
 
+    protected $table = 'pieces_of_furniture';
     protected $fillable = ['room_id', 'apartment_id'];
 
     public function room(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -52,6 +55,11 @@ class PieceOfFurniture extends Model
     public function type(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(PieceOfFurnitureType::class, 'type_code', 'code');
+    }
+
+    public function material(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Material::class, 'material_code', 'code');
     }
 
     public function history(): \Illuminate\Database\Eloquent\Relations\HasMany
