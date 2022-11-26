@@ -12,6 +12,7 @@ class RelationshipCompositeFilter extends AbstractFieldFilter
      */
     private array $filters = [];
     private bool $loadRelationship = true;
+    private bool $filterRelationship = false;
 
     public function setFilters(array $filters): static
     {
@@ -29,6 +30,16 @@ class RelationshipCompositeFilter extends AbstractFieldFilter
         return $this;
     }
 
+    /**
+     * @param bool $filterRelationship
+     * @return static
+     */
+    public function setFilterRelationship(bool $filterRelationship): static
+    {
+        $this->filterRelationship = $filterRelationship;
+        return $this;
+    }
+
     public function applyToQuery(array $requestFields, Builder $query)
     {
         if (empty($this->filters)) {
@@ -43,15 +54,16 @@ class RelationshipCompositeFilter extends AbstractFieldFilter
         });
 
         if ($this->loadRelationship) {
-            $query->with(
-                [
+
+            if ($this->filterRelationship) {
+                $query->with([$this->field]);
+            } else {
+                $query->with([
                     $this->field => function ($q) use ($requestFields, $filters) {
-                        foreach ($filters as $filter) {
-                            $filter->applyToQuery($requestFields, $q);
-                        }
+                        foreach ($filters as $filter) { $filter->applyToQuery($requestFields, $q); }
                     },
-                ]
-            );
+                ]);
+            }
         }
     }
 
