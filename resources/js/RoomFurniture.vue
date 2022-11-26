@@ -19,10 +19,37 @@ const furniture = ref([]);
 async function fetchFurniture() {
     const response = await furnitureAPI.index(filterParams.value);
     furniture.value = response.entities;
+    updateHistory();
 }
 
 watch(() => props.apartmentId, fetchFurniture);
 watch(() => props.roomId, fetchFurniture);
+
+// history
+const history = new Map();
+
+function updateHistory() {
+    for (const pieceOfFurniture of furniture.value) {
+
+        const historyLines = new Array(pieceOfFurniture.history.length);
+
+        for (let i = 0; i < pieceOfFurniture.history.length; i++) {
+            const historyEntry = pieceOfFurniture.history[i];
+            const dateFormatted = formatDate(historyEntry.placed_at, dateFormat);
+
+            let historyString = `[${dateFormatted}] Квартира: ${historyEntry.apartment_id} | `;
+            historyString += `Комната: ${historyEntry.room_id}`;
+
+            historyLines[i] = historyString;
+        }
+
+        history.set(pieceOfFurniture.id, historyLines.join("\n"));
+    }
+}
+
+function displayHistory(pieceOfFurnitureId) {
+    alert(history.get(pieceOfFurnitureId));
+}
 
 // filtering
 
@@ -74,11 +101,19 @@ fetchFurniture(filterParams.value);
     </tr>
     </thead>
     <tbody>
-    <tr v-for="furniture in furniture">
-        <td>{{ furniture.id }}</td>
-        <td>{{ furniture.name }}</td>
-        <td>{{ furniture.type_code }}</td>
-        <td>{{ formatDate(furniture.history[0].placed_at, dateFormat) }}</td>
+    <tr v-for="pieceOfFurniture in furniture">
+        <td>{{ pieceOfFurniture.id }}</td>
+        <td>{{ pieceOfFurniture.name }}</td>
+        <td>{{ pieceOfFurniture.type_code }}</td>
+        <td>
+            {{ formatDate(pieceOfFurniture.history[0].placed_at, dateFormat) }}
+            <a href="#"
+                v-if="pieceOfFurniture.history.length > 1"
+                @click.prevent="displayHistory(pieceOfFurniture.id)"
+            >
+            [История]
+            </a>
+        </td>
     </tr>
     </tbody>
 </table>
