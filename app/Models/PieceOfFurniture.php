@@ -16,10 +16,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $apartment_id
  * @property int $room_id
  * @property string $material_code
+ * @property string $color_code
  * @property-read \App\Models\PieceOfFurnitureType $type
  * @property-read \App\Models\Apartment $apartment
  * @property-read \App\Models\Room $room
  * @property-read \App\Models\Material $material
+ * @property-read \App\Models\Color $color
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PieceOfFurnitureHistoryEntry[] $history
  * @property-read int|null $history_count
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture newModelQuery()
@@ -30,6 +32,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereRoomId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereMaterialCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereColorCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereTypeCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|PieceOfFurniture whereUpdatedAt($value)
  * @method static \Database\Factories\PieceOfFurnitureFactory factory(...$parameters)
@@ -60,6 +64,11 @@ class PieceOfFurniture extends Model
     public function material(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Material::class, 'material_code', 'code');
+    }
+
+    public function color(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Color::class, 'color_code', 'code');
     }
 
     public function history(): \Illuminate\Database\Eloquent\Relations\HasMany
