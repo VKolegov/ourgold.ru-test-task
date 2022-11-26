@@ -28,10 +28,14 @@ class APIResponseBuilder
      * @var callable|null
      */
     private $entityMappingFunction = null;
+
+    private array $relationshipsToEagerLoad = [];
+
     /**
      * @var callable|null
      */
     private $entitiesMappingFunction = null;
+
 
     public function __construct(string $modelClass)
     {
@@ -74,11 +78,14 @@ class APIResponseBuilder
         return $this;
     }
 
-    public function setPageParamsFromRequest(Request $r) {
+    public function setPageParamsFromRequest(Request $r): static
+    {
         $params = $r->all(['page', 'perPage']);
 
         $this->setPage($params['page'] ?? $this->page);
         $this->setPerPage($params['perPage'] ?? $this->perPage);
+
+        return $this;
     }
 
     public function setQueryBuilder(Builder $queryBuilder): static
@@ -94,6 +101,16 @@ class APIResponseBuilder
     public function setEntityMappingFunction(?callable $entityMappingFunction): static
     {
         $this->entityMappingFunction = $entityMappingFunction;
+        return $this;
+    }
+
+    /**
+     * @param array $relationshipsToEagerLoad
+     * @return static
+     */
+    public function setRelationshipsToEagerLoad(array $relationshipsToEagerLoad): static
+    {
+        $this->relationshipsToEagerLoad = $relationshipsToEagerLoad;
         return $this;
     }
 
@@ -149,7 +166,10 @@ class APIResponseBuilder
 
     public function singleEntityResponse($id, string $idColumn = 'id'): JsonResponse
     {
-        $model = ($this->modelClass)::query()->where($idColumn, $id)->first();
+        $model = ($this->modelClass)::query()
+            ->where($idColumn, $id)
+            ->with($this->relationshipsToEagerLoad)
+            ->first();
 
         if (!$model) {
             return $this->errorResponse("not found", 404);
@@ -166,6 +186,8 @@ class APIResponseBuilder
     {
         $query = $this->queryBuilder->clone();
         $totalCount = $query->count();
+
+        $query->with($this->relationshipsToEagerLoad);
 
         if ($this->perPage > 0) {
             $offset = $this->perPage * ($this->page - 1);
