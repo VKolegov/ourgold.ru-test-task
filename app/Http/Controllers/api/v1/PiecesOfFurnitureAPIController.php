@@ -18,6 +18,7 @@ class PiecesOfFurnitureAPIController extends AbstractAPIController
     {
         return [
             new MultipleMatchFieldFilter('type_code', 'string'),
+            new MultipleMatchFieldFilter('material_code', 'string'),
             (new RelationshipCompositeFilter('history', 'string'))->setFilters([
                 new HistorySnapshotFilter('date', 'placed_at', 'removed_at'),
                 new MultipleMatchFieldFilter('apartment_id', 'int'),
