@@ -26,4 +26,9 @@ class PiecesOfFurnitureAPIController extends AbstractAPIController
             ]),
         ];
     }
+
+    protected function relationshipsToEagerLoad(): array
+    {
+        return ['material', 'type'];
+    }
 }
