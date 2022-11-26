@@ -130,9 +130,9 @@ class TestDataSeeder extends Seeder
             $room->furniture()->createMany($furnitureData);
         }
 
-        PieceOfFurnitureHistoryEntry::whereNotNull('date')
+        PieceOfFurnitureHistoryEntry::whereNotNull('placed_at')
             ->update([
-                'date' => now()->subMonth()->startOfDay(),
+                'placed_at' => now()->subMonth()->startOfDay(),
             ]);
     }
 
@@ -161,7 +161,12 @@ class TestDataSeeder extends Seeder
 
             $h = $pieceOfFurniture->history()->first();
             // otherwise saved only last value
-            $h->date = $movementDate->addMinutes($minutesStep * $movementsCount);
+            $h->placed_at = $movementDate->addMinutes($minutesStep * $movementsCount);
+            $h->save();
+
+            $h = $pieceOfFurniture->history()->skip(1)->first();
+            $h->removed_at = $movementDate->addMinutes($minutesStep * $movementsCount);
+
             $h->save();
             $movementsCount++;
         }

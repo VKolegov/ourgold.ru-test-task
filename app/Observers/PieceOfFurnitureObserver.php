@@ -21,8 +21,14 @@ class PieceOfFurnitureObserver
     }
 
     private function updateHistory(PieceOfFurniture $pieceOfFurniture) {
+        $date = now();
+        $pieceOfFurniture->history()->whereNull('removed_at')->update(
+            [
+                'removed_at' => $date,
+            ]
+        );
         $pieceOfFurniture->history()->create([
-            'date' => now(),
+            'placed_at' => $date,
             'apartment_id' => $pieceOfFurniture->apartment_id,
             'room_id' => $pieceOfFurniture->room_id,
         ]);

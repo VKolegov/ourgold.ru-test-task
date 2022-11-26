@@ -54,6 +54,6 @@ class PieceOfFurniture extends Model
     public function history(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(PieceOfFurnitureHistoryEntry::class, 'piece_of_furniture_id', 'id')
-            ->orderBy('date', 'desc');
+            ->orderBy('placed_at', 'desc')->orderBy('id', 'desc');
     }
 }
