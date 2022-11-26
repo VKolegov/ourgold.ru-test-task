@@ -4,7 +4,7 @@ namespace App\Helpers\API\Filtering;
 
 use Illuminate\Contracts\Database\Query\Builder;
 
-class RelationshipFilter extends AbstractFieldFilter
+class RelationshipCompositeFilter extends AbstractFieldFilter
 {
 
     /**
