@@ -94,8 +94,11 @@ class PieceOfFurniture extends Model
 
         return $this->history->filter(
             function (PieceOfFurnitureHistoryEntry $historyEntry) use ($date) {
-                $p = $historyEntry->placed_at->isBefore($date);
-                return $p && (!$historyEntry->removed_at || $historyEntry->removed_at->isAfter($date));
+                return ($historyEntry->placed_at->isBefore($date)
+                        || $historyEntry->placed_at->equalTo($date))
+                    && (!$historyEntry->removed_at
+                        || $historyEntry->placed_at->equalTo($date)
+                        || $historyEntry->removed_at->isAfter($date));
             })
             ->first();
     }
