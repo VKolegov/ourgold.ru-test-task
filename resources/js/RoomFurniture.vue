@@ -1,9 +1,12 @@
 <script setup>
 import {ref, watch} from "vue";
 import DatePicker from "@vuepic/vue-datepicker";
+import VueSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 import "@vuepic/vue-datepicker/dist/main.css";
 import {formatDate} from "./utils";
 import furnitureAPI from "./services/furnitureAPI";
+import furnitureTypesAPI from "./services/furnitureTypesAPI";
 
 const props = defineProps({
     roomId: [Number, String],
@@ -52,6 +55,13 @@ function displayHistory(pieceOfFurnitureId) {
 
 // filtering
 
+const furnitureTypes = ref([]);
+
+async function fetchFurnitureTypes() {
+    const response = await furnitureTypesAPI.index({page: 1, per_page: 100});
+    furnitureTypes.value = response.entities;
+}
+
 const filterParams = ref({
     page: 1,
     per_page: 50,
@@ -61,19 +71,29 @@ const filterParams = ref({
 });
 
 watch(filterParams, function() {
-   fetchFurniture();
+    fetchFurniture();
 }, {deep: true});
+
+function onFurnitureTypeFilterUpdate(types) {
+    console.log(types);
+    filterParams.value = {
+        ...filterParams.value,
+        type_code: types ? types.map(type => type.code) : null,
+    };
+}
 
 // filtering end
 
 // on create
 fetchFurniture(filterParams.value);
+fetchFurnitureTypes();
 </script>
 
 <template>
 <h1>
     <router-link to="/">[К]</router-link>
-    > <router-link :to="{name: 'apartment-rooms', params:{apartmentId} }">Квартира {{ apartmentId }}</router-link>
+    >
+    <router-link :to="{name: 'apartment-rooms', params:{apartmentId} }">Квартира {{ apartmentId }}</router-link>
     > Комната {{ roomId }}
 </h1>
 <date-picker
@@ -94,6 +114,20 @@ fetchFurniture(filterParams.value);
 
     v-bind="$attrs"
 />
+<label>Тип мебели</label>
+<vue-select
+    :clearable="true"
+    :filterable="true"
+    label="name"
+    :multiple="true"
+    :options="furnitureTypes"
+    :model-value="filterParams.type"
+    @update:modelValue="onFurnitureTypeFilterUpdate"
+>
+    <template #selected-option="{ name }">
+        <span>{{ name }}</span>
+    </template>
+</vue-select>
 <table class="table table-striped">
     <thead>
     <tr>
@@ -115,10 +149,10 @@ fetchFurniture(filterParams.value);
         <td>
             {{ formatDate(pieceOfFurniture.history[0].placed_at, dateFormat) }}
             <a href="#"
-                v-if="pieceOfFurniture.history.length > 1"
-                @click.prevent="displayHistory(pieceOfFurniture.id)"
+               v-if="pieceOfFurniture.history.length > 1"
+               @click.prevent="displayHistory(pieceOfFurniture.id)"
             >
-            [История]
+                [История]
             </a>
         </td>
     </tr>
