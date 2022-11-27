@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -75,5 +76,27 @@ class PieceOfFurniture extends Model
     {
         return $this->hasMany(PieceOfFurnitureHistoryEntry::class, 'piece_of_furniture_id', 'id')
             ->orderBy('placed_at', 'desc')->orderBy('id', 'desc');
+    }
+
+    public function historyStateAt(\DateTimeInterface $date): ?PieceOfFurnitureHistoryEntry
+    {
+
+        if (!$this->relationLoaded('history')) {
+            /** @noinspection PhpIncompatibleReturnTypeInspection */
+            return $this->history()
+                ->where('placed_at', '<=', $date)
+                ->where(function (Builder $q) use ($date) {
+                    $q->whereNull('removed_at');
+                    $q->orWhere('removed_at', '>=', $date);
+                })
+                ->first();
+        }
+
+        return $this->history->filter(
+            function (PieceOfFurnitureHistoryEntry $historyEntry) use ($date) {
+                $p = $historyEntry->placed_at->isBefore($date);
+                return $p && (!$historyEntry->removed_at || $historyEntry->removed_at->isAfter($date));
+            })
+            ->first();
     }
 }
