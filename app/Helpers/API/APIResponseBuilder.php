@@ -188,6 +188,7 @@ class APIResponseBuilder
         $totalCount = $query->count();
 
         $query->with($this->relationshipsToEagerLoad);
+        $query->orderBy('id', 'asc');
 
         if ($this->perPage > 0) {
             $offset = $this->perPage * ($this->page - 1);
