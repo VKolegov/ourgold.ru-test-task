@@ -51,8 +51,8 @@ watch(() => props.furniture, function() {
         <td>Тип</td>
         <td>Материал</td>
         <td>Цвет</td>
-        <td>Комната</td>
-        <td v-if="history.size > 0">Перемещено</td>
+        <td>Текущая комната</td>
+        <td v-if="history.size > 0">Дата перемещения</td>
     </tr>
     </thead>
     <tbody>
@@ -62,9 +62,9 @@ watch(() => props.furniture, function() {
         <td>{{ pieceOfFurniture.type.name }}</td>
         <td>{{ pieceOfFurniture.material.name }}</td>
         <td>{{ pieceOfFurniture.color.name }}</td>
-        <td>{{ pieceOfFurniture.room_id }}</td>
-        <td v-if="pieceOfFurniture.history">
-            {{ formatDate(pieceOfFurniture.history[0].placed_at, dateFormat) }}
+        <td>{{ pieceOfFurniture.current_history_state.room_id }}</td>
+        <td v-if="history.size > 0">
+            {{ formatDate(pieceOfFurniture.current_history_state.placed_at, dateFormat) }}
             <a href="#"
                v-if="pieceOfFurniture.history.length > 1"
                @click.prevent="displayHistory(pieceOfFurniture.id)"
