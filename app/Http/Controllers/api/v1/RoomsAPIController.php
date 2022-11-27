@@ -15,6 +15,7 @@ class RoomsAPIController extends AbstractAPIController
     protected function filterParams(): array
     {
         return [
+            new MultipleMatchFieldFilter('id', 'int'),
             new MultipleMatchFieldFilter('apartment_id', 'int'),
             new MultipleMatchFieldFilter('type_code', 'string'),
         ];

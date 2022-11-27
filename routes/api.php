@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\api\v1\ApartmentsAPIController;
+use App\Http\Controllers\api\v1\ColorsAPIController;
 use App\Http\Controllers\api\v1\FurnitureTypesAPIController;
 use App\Http\Controllers\api\v1\MaterialsAPIController;
 use App\Http\Controllers\api\v1\PiecesOfFurnitureAPIController;
 use App\Http\Controllers\api\v1\RoomsAPIController;
+use App\Http\Controllers\api\v1\RoomTypesAPIController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -52,8 +54,22 @@ Route::controller(MaterialsAPIController::class)
         Route::get('/{id}', 'show');
     });
 
+Route::controller(ColorsAPIController::class)
+    ->prefix('colors')
+    ->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
 Route::controller(FurnitureTypesAPIController::class)
     ->prefix('furniture-types')
+    ->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+Route::controller(RoomTypesAPIController::class)
+    ->prefix('room-types')
     ->group(function () {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
