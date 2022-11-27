@@ -6,7 +6,7 @@ import "vue-select/dist/vue-select.css";
 import "@vuepic/vue-datepicker/dist/main.css";
 import {formatDate} from "./utils";
 import furnitureAPI from "./services/furnitureAPI";
-import {useFurnitureTypes} from "./composables/dictionaries";
+import {useFurnitureTypes, useMaterials} from "./composables/dictionaries";
 
 const props = defineProps({
     roomId: [Number, String],
@@ -56,6 +56,7 @@ function displayHistory(pieceOfFurnitureId) {
 // filtering
 
 const {furnitureTypes, fetchFurnitureTypes} = useFurnitureTypes();
+const {materials, fetchMaterials} = useMaterials();
 
 const filterParams = ref({
     page: 1,
@@ -69,19 +70,12 @@ watch(filterParams, function() {
     fetchFurniture();
 }, {deep: true});
 
-function onFurnitureTypeFilterUpdate(types) {
-    console.log(types);
-    filterParams.value = {
-        ...filterParams.value,
-        type_code: types ? types.map(type => type.code) : null,
-    };
-}
-
 // filtering end
 
 // on create
 fetchFurniture(filterParams.value);
 fetchFurnitureTypes();
+fetchMaterials();
 </script>
 
 <template>
@@ -116,12 +110,20 @@ fetchFurnitureTypes();
     label="name"
     :multiple="true"
     :options="furnitureTypes"
-    :model-value="filterParams.type"
-    @update:modelValue="onFurnitureTypeFilterUpdate"
+    :reduce="e => e.code"
+    v-model="filterParams.type_code"
 >
-    <template #selected-option="{ name }">
-        <span>{{ name }}</span>
-    </template>
+</vue-select>
+<label>Материал мебели</label>
+<vue-select
+    :clearable="true"
+    :filterable="true"
+    label="name"
+    :multiple="true"
+    :options="materials"
+    :reduce="e => e.code"
+    v-model="filterParams.material_code"
+>
 </vue-select>
 <table class="table table-striped">
     <thead>
