@@ -1,9 +1,9 @@
 <script setup>
-import API from "./services/API";
 import {ref, watch} from "vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import {formatDate} from "./utils";
+import furnitureAPI from "./services/furnitureAPI";
 
 const props = defineProps({
     roomId: [Number, String],
@@ -13,7 +13,6 @@ const props = defineProps({
 const dateFormat = "dd/MM/yyyy HH:mm";
 
 
-const furnitureAPI = new API("/api/v1/pieces-of-furniture");
 const furniture = ref([]);
 
 async function fetchFurniture() {

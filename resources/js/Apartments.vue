@@ -1,8 +1,8 @@
 <script setup>
 import API from "./services/API";
 import {ref} from "vue";
+import apartmentsAPI from "./services/apartmentsAPI";
 
-const apartmentsAPI = new API("/api/v1/apartments");
 const apartments = ref([]);
 
 async function fetchApartments() {

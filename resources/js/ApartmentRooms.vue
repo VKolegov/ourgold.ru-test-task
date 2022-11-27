@@ -1,13 +1,12 @@
 <script setup>
-import API from "./services/API";
-import {ref, watch} from "vue";
+import {ref} from "vue";
+import roomsAPI from "./services/roomsAPI";
 
 const props = defineProps({
     apartmentId: [Number, String],
 });
 
 
-const roomsAPI = new API("/api/v1/rooms");
 const rooms = ref([]);
 
 async function fetchRooms() {
