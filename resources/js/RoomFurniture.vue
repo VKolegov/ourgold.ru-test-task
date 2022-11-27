@@ -6,7 +6,7 @@ import "vue-select/dist/vue-select.css";
 import "@vuepic/vue-datepicker/dist/main.css";
 import {formatDate} from "./utils";
 import furnitureAPI from "./services/furnitureAPI";
-import {useFurnitureTypes, useMaterials} from "./composables/dictionaries";
+import {useColors, useFurnitureTypes, useMaterials} from "./composables/dictionaries";
 
 const props = defineProps({
     roomId: [Number, String],
@@ -57,6 +57,7 @@ function displayHistory(pieceOfFurnitureId) {
 
 const {furnitureTypes, fetchFurnitureTypes} = useFurnitureTypes();
 const {materials, fetchMaterials} = useMaterials();
+const {colors, fetchColors} = useColors();
 
 const filterParams = ref({
     page: 1,
@@ -76,6 +77,7 @@ watch(filterParams, function() {
 fetchFurniture(filterParams.value);
 fetchFurnitureTypes();
 fetchMaterials();
+fetchColors();
 </script>
 
 <template>
@@ -114,7 +116,7 @@ fetchMaterials();
     v-model="filterParams.type_code"
 >
 </vue-select>
-<label>Материал мебели</label>
+<label>Материал</label>
 <vue-select
     :clearable="true"
     :filterable="true"
@@ -123,6 +125,17 @@ fetchMaterials();
     :options="materials"
     :reduce="e => e.code"
     v-model="filterParams.material_code"
+>
+</vue-select>
+<label>Цвет</label>
+<vue-select
+    :clearable="true"
+    :filterable="true"
+    label="name"
+    :multiple="true"
+    :options="colors"
+    :reduce="e => e.code"
+    v-model="filterParams.color_code"
 >
 </vue-select>
 <table class="table table-striped">
