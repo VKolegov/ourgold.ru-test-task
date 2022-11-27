@@ -6,7 +6,7 @@ import "vue-select/dist/vue-select.css";
 import "@vuepic/vue-datepicker/dist/main.css";
 import {formatDate} from "./utils";
 import furnitureAPI from "./services/furnitureAPI";
-import furnitureTypesAPI from "./services/furnitureTypesAPI";
+import {useFurnitureTypes} from "./composables/dictionaries";
 
 const props = defineProps({
     roomId: [Number, String],
@@ -55,12 +55,7 @@ function displayHistory(pieceOfFurnitureId) {
 
 // filtering
 
-const furnitureTypes = ref([]);
-
-async function fetchFurnitureTypes() {
-    const response = await furnitureTypesAPI.index({page: 1, per_page: 100});
-    furnitureTypes.value = response.entities;
-}
+const {furnitureTypes, fetchFurnitureTypes} = useFurnitureTypes();
 
 const filterParams = ref({
     page: 1,
