@@ -1,5 +1,4 @@
 <script setup>
-import API from "./services/API";
 import {ref} from "vue";
 import apartmentsAPI from "./services/apartmentsAPI";
 
@@ -31,7 +30,9 @@ fetchApartments();
         <td>{{ apartment.id }}</td>
         <td>{{ apartment.number_of_rooms }}</td>
         <td>{{ apartment.address }}</td>
-        <td><router-link :to="{name: 'apartment-rooms', params: {apartmentId: apartment.id}}">Перейти</router-link></td>
+        <td>
+            <router-link :to="{name: 'apartment-rooms', params: {apartmentId: apartment.id}}">Перейти</router-link>
+        </td>
     </tr>
     </tbody>
 </table>
