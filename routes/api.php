@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\v1\ApartmentsAPIController;
+use App\Http\Controllers\api\v1\FurnitureTypesAPIController;
 use App\Http\Controllers\api\v1\MaterialsAPIController;
 use App\Http\Controllers\api\v1\PiecesOfFurnitureAPIController;
 use App\Http\Controllers\api\v1\RoomsAPIController;
@@ -46,6 +47,13 @@ Route::controller(PiecesOfFurnitureAPIController::class)
 // essentially dictionaries
 Route::controller(MaterialsAPIController::class)
     ->prefix('materials')
+    ->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+Route::controller(FurnitureTypesAPIController::class)
+    ->prefix('furniture-types')
     ->group(function () {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
