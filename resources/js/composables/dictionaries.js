@@ -2,6 +2,7 @@ import {ref} from "vue";
 import furnitureTypesAPI from "../services/furnitureTypesAPI";
 import materialsAPI from "../services/materialsAPI";
 import colorsAPI from "../services/colorsAPI";
+import roomTypesAPI from "../services/roomTypesAPI";
 
 export function useFurnitureTypes() {
 
@@ -13,6 +14,18 @@ export function useFurnitureTypes() {
     }
 
     return {furnitureTypes, fetchFurnitureTypes};
+}
+
+export function useRoomTypes() {
+
+    const roomTypes = ref([]);
+
+    async function fetchRoomTypes() {
+        const response = await roomTypesAPI.index({page: 1, per_page: 100});
+        roomTypes.value = response.entities;
+    }
+
+    return {roomTypes, fetchRoomTypes};
 }
 
 export function useMaterials() {
