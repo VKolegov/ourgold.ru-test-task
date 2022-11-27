@@ -1,5 +1,6 @@
 import {ref} from "vue";
 import furnitureTypesAPI from "../services/furnitureTypesAPI";
+import materialsAPI from "../services/materialsAPI";
 
 export function useFurnitureTypes() {
 
@@ -11,4 +12,15 @@ export function useFurnitureTypes() {
     }
 
     return {furnitureTypes, fetchFurnitureTypes};
+}
+
+export function useMaterials() {
+    const materials = ref([]);
+
+    async function fetchMaterials() {
+        const response = await materialsAPI.index({page: 1, per_page: 100});
+        materials.value = response.entities;
+    }
+
+    return {materials, fetchMaterials};
 }
