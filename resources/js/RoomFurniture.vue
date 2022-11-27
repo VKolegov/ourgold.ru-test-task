@@ -7,6 +7,7 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import furnitureAPI from "./services/furnitureAPI";
 import {useColors, useFurnitureTypes, useMaterials} from "./composables/dictionaries";
 import FurnitureTable from "./components/FurnitureTable.vue";
+import {useFilter} from "./composables/filter";
 
 const props = defineProps({
     roomId: [Number, String],
@@ -18,7 +19,7 @@ const dateFormat = "dd/MM/yyyy HH:mm";
 const furniture = ref([]);
 
 async function fetchFurniture() {
-    const response = await furnitureAPI.index(filterParams.value);
+    const response = await furnitureAPI.index(filter.value);
     furniture.value = response.entities;
 }
 
@@ -31,22 +32,20 @@ const {furnitureTypes, fetchFurnitureTypes} = useFurnitureTypes();
 const {materials, fetchMaterials} = useMaterials();
 const {colors, fetchColors} = useColors();
 
-const filterParams = ref({
+const {filter, onFilterUpdate} = useFilter();
+filter.value = {
     page: 1,
     per_page: 50,
     apartment_id: props.apartmentId ? [props.apartmentId] : null,
     room_id: props.roomId ? [props.roomId] : null,
     date: (new Date()).toISOString(),
-});
-
-watch(filterParams, function() {
-    fetchFurniture();
-}, {deep: true});
+};
+onFilterUpdate(fetchFurniture)
 
 // filtering end
 
 // on create
-fetchFurniture(filterParams.value);
+fetchFurniture(filter.value);
 fetchFurnitureTypes();
 fetchMaterials();
 fetchColors();
@@ -60,7 +59,7 @@ fetchColors();
     > Комната {{ roomId }}
 </h1>
 <date-picker
-    v-model="filterParams.date"
+    v-model="filter.date"
     :format="dateFormat"
     :clearable="false"
 
@@ -85,7 +84,7 @@ fetchColors();
     :multiple="true"
     :options="furnitureTypes"
     :reduce="e => e.code"
-    v-model="filterParams.type_code"
+    v-model="filter.type_code"
 >
 </vue-select>
 <label>Материал</label>
@@ -96,7 +95,7 @@ fetchColors();
     :multiple="true"
     :options="materials"
     :reduce="e => e.code"
-    v-model="filterParams.material_code"
+    v-model="filter.material_code"
 >
 </vue-select>
 <label>Цвет</label>
@@ -107,7 +106,7 @@ fetchColors();
     :multiple="true"
     :options="colors"
     :reduce="e => e.code"
-    v-model="filterParams.color_code"
+    v-model="filter.color_code"
 >
 </vue-select>
 <furniture-table
