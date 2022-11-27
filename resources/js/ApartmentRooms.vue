@@ -1,9 +1,11 @@
 <script setup>
-import {ref} from "vue";
-
+import {computed, ref} from "vue";
+import VueSelect from "vue-select";
 import roomsAPI from "./services/roomsAPI";
 import furnitureAPI from "./services/furnitureAPI";
 import FurnitureTable from "./components/FurnitureTable.vue";
+import {useRoomTypes} from "./composables/dictionaries";
+import {useFilter} from "./composables/filter";
 
 const props = defineProps({
     apartmentId: [Number, String],
@@ -13,19 +15,12 @@ const props = defineProps({
 const rooms = ref([]);
 
 async function fetchRooms() {
-    const response = await roomsAPI.index({
-        page: 1,
-        per_page: 50,
-        apartment_id: props.apartmentId ? [props.apartmentId] : null,
-    });
+    const response = await roomsAPI.index(filter.value);
     rooms.value = response.entities;
+    await fetchFurniture();
 }
 
-fetchRooms();
-
 // furniture
-const dateFormat = "dd/MM/yyyy HH:mm";
-
 const furniture = ref([]);
 
 async function fetchFurniture() {
@@ -36,7 +31,22 @@ async function fetchFurniture() {
     });
     furniture.value = response.entities;
 }
-fetchFurniture();
+
+const roomsId = computed(() => rooms.value.map(r => r.id));
+
+// filter
+const {filter, onFilterUpdate} = useFilter();
+filter.value = {
+    page: 1,
+    per_page: 50,
+    apartment_id: props.apartmentId ? [props.apartmentId] : null,
+};
+onFilterUpdate(fetchRooms);
+const {roomTypes, fetchRoomTypes} = useRoomTypes();
+
+// oncreate
+fetchRooms();
+fetchRoomTypes();
 </script>
 
 <template>
@@ -44,6 +54,17 @@ fetchFurniture();
     <router-link to="/">[К]</router-link>
     > Квартира {{ apartmentId }}
 </h1>
+<label>Тип комнаты</label>
+<vue-select
+    :clearable="true"
+    :filterable="true"
+    label="name"
+    :multiple="true"
+    :options="roomTypes"
+    :reduce="e => e.code"
+    v-model="filter.type_code"
+>
+</vue-select>
 <table class="table table-striped">
     <thead>
     <tr>
@@ -72,6 +93,6 @@ fetchFurniture();
 <h2>Мебель в квартире</h2>
 <furniture-table
     :furniture="furniture"
-    :date-format="dateFormat"
+    date-format="dd/MM/yyyy HH:mm"
 />
 </template>
