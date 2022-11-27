@@ -194,20 +194,21 @@ class APIResponseBuilder
             $query->take($this->perPage)->offset($offset);
         }
 
-        $entities = $query->get()->toArray();
+        $entities = $query->get();
+        if ($this->entitiesMappingFunction) {
+            $entitiesArray = $entities->map($this->entitiesMappingFunction)->toArray();
+        } else {
+            $entitiesArray = $entities->toArray();
+        }
 
         return new JsonResponse(
-            $this->entitiesResponseArray($entities, $totalCount)
+            $this->entitiesResponseArray($entitiesArray, $totalCount)
         );
     }
 
     #[ArrayShape(['total_count' => "int", 'entities' => "array"])]
     public function entitiesResponseArray(array $entities, int $totalCount): array
     {
-        if ($this->entitiesMappingFunction) {
-            $entities = array_map($this->entitiesMappingFunction, $entities);
-        }
-
         return [
             'total_count' => $totalCount,
             'entities' => $entities,
