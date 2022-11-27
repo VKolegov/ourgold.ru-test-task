@@ -1,4 +1,7 @@
-## Запуск
+## Первоначальный запуск
+`./init.sh`
+
+## Последующие запуски
 `./vendor/bin/sail up -d`
 
 ## Использование кастомного домена
@@ -9,4 +12,4 @@ REVERSE_PROXY_HOST=ourgold-test.local
 REVERSE_PROXY_PORT=80
 ```
 host-файл при такой конфигурации должен содержать `127.0.0.1 ourgold-test.local`
-В таком сервер будет доступен либо по http://localhost:81, либо по http://ourgold-test.local
+При такой конфигурации проект будет доступен либо по http://localhost:81, либо по http://ourgold-test.local
