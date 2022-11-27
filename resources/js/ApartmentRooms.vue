@@ -1,6 +1,7 @@
 <script setup>
 import {computed, ref} from "vue";
 import VueSelect from "vue-select";
+import DatePicker from "@vuepic/vue-datepicker";
 import roomsAPI from "./services/roomsAPI";
 import furnitureAPI from "./services/furnitureAPI";
 import FurnitureTable from "./components/FurnitureTable.vue";
@@ -11,6 +12,7 @@ const props = defineProps({
     apartmentId: [Number, String],
 });
 
+const dateFormat = "dd/MM/yyyy HH:mm";
 
 const rooms = ref([]);
 
@@ -24,16 +26,18 @@ async function fetchRooms() {
 const furniture = ref([]);
 
 async function fetchFurniture() {
-    const response = await furnitureAPI.index({
-        page: 1,
-        per_page: 50,
-        apartment_id: props.apartmentId ? [props.apartmentId] : null,
-        room_id: rooms.value.map(r => r.id),
-    });
+    const response = await furnitureAPI.index(furnitureFilter.value);
     furniture.value = response.entities;
 }
 
-const roomsId = computed(() => rooms.value.map(r => r.id));
+const {filter: furnitureFilter, onFilterUpdate: onFurnitureFilterUpdate} = useFilter();
+furnitureFilter.value = {
+    page: 1,
+    per_page: 50,
+    apartment_id: props.apartmentId ? [props.apartmentId] : null,
+    room_id: rooms.value.map(r => r.id),
+};
+onFurnitureFilterUpdate(fetchFurniture);
 
 // filter
 const {filter, onFilterUpdate} = useFilter();
@@ -66,6 +70,27 @@ fetchRoomTypes();
     v-model="filter.type_code"
 >
 </vue-select>
+<date-picker
+    v-model="furnitureFilter.date"
+    :format="dateFormat"
+    :clearable="false"
+    position="left"
+    :auto-position="false"
+    alt-position
+
+    :enable-time-picker="true"
+    minutes-increment="5"
+
+
+    :month-change-on-scroll="false"
+    :auto-apply="true"
+    locale="ru-RU"
+
+    input-class-name="form-control"
+    utc
+
+    v-bind="$attrs"
+/>
 <table class="table table-striped">
     <thead>
     <tr>
@@ -94,6 +119,6 @@ fetchRoomTypes();
 <h2>Мебель в квартире</h2>
 <furniture-table
     :furniture="furniture"
-    date-format="dd/MM/yyyy HH:mm"
+    :date-format="dateFormat"
 />
 </template>

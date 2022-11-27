@@ -2,8 +2,6 @@
 import {ref, watch} from "vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import VueSelect from "vue-select";
-import "vue-select/dist/vue-select.css";
-import "@vuepic/vue-datepicker/dist/main.css";
 import furnitureAPI from "./services/furnitureAPI";
 import {useColors, useFurnitureTypes, useMaterials} from "./composables/dictionaries";
 import FurnitureTable from "./components/FurnitureTable.vue";
