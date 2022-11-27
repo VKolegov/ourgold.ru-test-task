@@ -67,7 +67,7 @@ class TestDataSeeder extends Seeder
             $this->createFurnitureForApartment($apartment);
         }
 
-       $this->generateMovements($apartments, 30, 5);
+       $this->generateMovements($apartments, 100, 5);
     }
 
     private function createRoomsForApartment(Apartment $apartment): void
@@ -144,13 +144,13 @@ class TestDataSeeder extends Seeder
 
         PieceOfFurnitureHistoryEntry::whereNotNull('placed_at')
             ->update([
-                'placed_at' => now()->subMonth()->startOfDay(),
+                'placed_at' => now()->subWeek()->startOfDay(),
             ]);
     }
 
     private function generateMovements(Collection $apartments, int $movements, int $minutesStep = 15) {
 
-        $movementDate = now()->subMonth()->startOfDay()->toImmutable();
+        $movementDate = now()->subWeek()->startOfDay()->toImmutable();
 
         $movementsCount = 0;
 
