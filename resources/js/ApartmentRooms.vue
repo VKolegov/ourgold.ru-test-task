@@ -28,6 +28,7 @@ async function fetchFurniture() {
         page: 1,
         per_page: 50,
         apartment_id: props.apartmentId ? [props.apartmentId] : null,
+        room_id: rooms.value.map(r => r.id),
     });
     furniture.value = response.entities;
 }
