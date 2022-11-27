@@ -1,6 +1,9 @@
 <script setup>
 import {ref} from "vue";
+
 import roomsAPI from "./services/roomsAPI";
+import furnitureAPI from "./services/furnitureAPI";
+import FurnitureTable from "./components/FurnitureTable.vue";
 
 const props = defineProps({
     apartmentId: [Number, String],
@@ -20,7 +23,20 @@ async function fetchRooms() {
 
 fetchRooms();
 
+// furniture
+const dateFormat = "dd/MM/yyyy HH:mm";
 
+const furniture = ref([]);
+
+async function fetchFurniture() {
+    const response = await furnitureAPI.index({
+        page: 1,
+        per_page: 50,
+        apartment_id: props.apartmentId ? [props.apartmentId] : null,
+    });
+    furniture.value = response.entities;
+}
+fetchFurniture();
 </script>
 
 <template>
@@ -52,7 +68,10 @@ fetchRooms();
     </tr>
     </tbody>
 </table>
-</template>
 
-<style scoped>
-</style>
+<h2>Мебель в квартире</h2>
+<furniture-table
+    :furniture="furniture"
+    :date-format="dateFormat"
+/>
+</template>
