@@ -4,9 +4,9 @@ import DatePicker from "@vuepic/vue-datepicker";
 import VueSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
 import "@vuepic/vue-datepicker/dist/main.css";
-import {formatDate} from "./utils";
 import furnitureAPI from "./services/furnitureAPI";
 import {useColors, useFurnitureTypes, useMaterials} from "./composables/dictionaries";
+import FurnitureTable from "./components/FurnitureTable.vue";
 
 const props = defineProps({
     roomId: [Number, String],
@@ -15,43 +15,15 @@ const props = defineProps({
 
 const dateFormat = "dd/MM/yyyy HH:mm";
 
-
 const furniture = ref([]);
 
 async function fetchFurniture() {
     const response = await furnitureAPI.index(filterParams.value);
     furniture.value = response.entities;
-    updateHistory();
 }
 
 watch(() => props.apartmentId, fetchFurniture);
 watch(() => props.roomId, fetchFurniture);
-
-// history
-const history = new Map();
-
-function updateHistory() {
-    for (const pieceOfFurniture of furniture.value) {
-
-        const historyLines = new Array(pieceOfFurniture.history.length);
-
-        for (let i = 0; i < pieceOfFurniture.history.length; i++) {
-            const historyEntry = pieceOfFurniture.history[i];
-            const dateFormatted = formatDate(historyEntry.placed_at, dateFormat);
-
-            let historyString = `[${dateFormatted}] Квартира: ${historyEntry.apartment_id} | `;
-            historyString += `Комната: ${historyEntry.room_id}`;
-
-            historyLines[i] = historyString;
-        }
-
-        history.set(pieceOfFurniture.id, historyLines.join("\n"));
-    }
-}
-
-function displayHistory(pieceOfFurnitureId) {
-    alert(history.get(pieceOfFurnitureId));
-}
 
 // filtering
 
@@ -138,36 +110,10 @@ fetchColors();
     v-model="filterParams.color_code"
 >
 </vue-select>
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <td>ID</td>
-        <td>Название</td>
-        <td>Тип</td>
-        <td>Материал</td>
-        <td>Цвет</td>
-        <td>Перемещено</td>
-    </tr>
-    </thead>
-    <tbody>
-    <tr v-for="pieceOfFurniture in furniture">
-        <td>{{ pieceOfFurniture.id }}</td>
-        <td>{{ pieceOfFurniture.name }}</td>
-        <td>{{ pieceOfFurniture.type.name }}</td>
-        <td>{{ pieceOfFurniture.material.name }}</td>
-        <td>{{ pieceOfFurniture.color.name }}</td>
-        <td>
-            {{ formatDate(pieceOfFurniture.history[0].placed_at, dateFormat) }}
-            <a href="#"
-               v-if="pieceOfFurniture.history.length > 1"
-               @click.prevent="displayHistory(pieceOfFurniture.id)"
-            >
-                [История]
-            </a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<furniture-table
+    :furniture="furniture"
+    :date-format="dateFormat"
+/>
 </template>
 
 <style scoped>
