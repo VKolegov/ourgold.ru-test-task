@@ -5,6 +5,7 @@ use App\Http\Controllers\api\v1\ColorsAPIController;
 use App\Http\Controllers\api\v1\FurnitureTypesAPIController;
 use App\Http\Controllers\api\v1\MaterialsAPIController;
 use App\Http\Controllers\api\v1\PiecesOfFurnitureAPIController;
+use App\Http\Controllers\api\v1\PiecesOfFurnitureHistoryAPIController;
 use App\Http\Controllers\api\v1\RoomsAPIController;
 use App\Http\Controllers\api\v1\RoomTypesAPIController;
 use Illuminate\Http\Request;
@@ -44,6 +45,12 @@ Route::controller(PiecesOfFurnitureAPIController::class)
     ->group(function () {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
+    });
+
+Route::controller(PiecesOfFurnitureHistoryAPIController::class)
+    ->prefix('furniture-history')
+    ->group(function () {
+        Route::get('/', 'index');
     });
 
 // essentially dictionaries
