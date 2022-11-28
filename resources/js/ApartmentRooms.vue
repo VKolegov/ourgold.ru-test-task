@@ -19,6 +19,8 @@ const rooms = ref([]);
 async function fetchRooms() {
     const response = await roomsAPI.index(filter.value);
     rooms.value = response.entities;
+
+    furnitureFilter.value.room_id = rooms.value.map(r => r.id);
     await fetchFurniture();
 }
 
