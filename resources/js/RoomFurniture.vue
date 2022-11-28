@@ -108,6 +108,7 @@ fetchColors();
 >
 </vue-select>
 <furniture-table
+    v-if="furniture && furniture.length > 0"
     :furniture="furniture"
     :date-format="dateFormat"
 />

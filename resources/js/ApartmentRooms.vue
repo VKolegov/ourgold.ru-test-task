@@ -120,6 +120,7 @@ fetchRoomTypes();
 
 <h2>Мебель в квартире</h2>
 <furniture-table
+    v-if="furniture && furniture.length > 0"
     :furniture="furniture"
     :date-format="dateFormat"
 />
