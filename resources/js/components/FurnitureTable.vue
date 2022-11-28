@@ -52,7 +52,7 @@ watch(() => props.furniture, function() {
         <td>Материал</td>
         <td>Цвет</td>
         <td>Текущая комната</td>
-        <td v-if="history.size > 0">Дата перемещения</td>
+        <td v-if="furniture[0].current_history_state">Дата перемещения</td>
     </tr>
     </thead>
     <tbody>
@@ -63,7 +63,7 @@ watch(() => props.furniture, function() {
         <td>{{ pieceOfFurniture.material.name }}</td>
         <td>{{ pieceOfFurniture.color.name }}</td>
         <td>{{ pieceOfFurniture.current_history_state.room_id }}</td>
-        <td v-if="history.size > 0">
+        <td v-if="pieceOfFurniture.current_history_state">
             {{ formatDate(pieceOfFurniture.current_history_state.placed_at, dateFormat) }}
             <a href="#"
                v-if="pieceOfFurniture.history.length > 1"
